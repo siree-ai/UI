@@ -1,0 +1,64 @@
+-- Services
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+
+-- Target player name for teleportation
+local teleportToPlayerName = "i_siree"  -- Change to your target player's username
+
+-- Create GUI Elements
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "TeleportGui"
+screenGui.Parent = localPlayer:WaitForChild("PlayerGui")
+
+-- Create TextBox for command input
+local commandTextBox = Instance.new("TextBox")
+commandTextBox.Name = "CommandTextBox"
+commandTextBox.Size = UDim2.new(0, 200, 0, 50)
+commandTextBox.Position = UDim2.new(0.5, -100, 0.5, -25)
+commandTextBox.PlaceholderText = "Enter Command"
+commandTextBox.Text = ""
+commandTextBox.Parent = screenGui
+
+-- Create Button to trigger teleport
+local teleportButton = Instance.new("TextButton")
+teleportButton.Name = "TeleportButton"
+teleportButton.Size = UDim2.new(0, 200, 0, 50)
+teleportButton.Position = UDim2.new(0.5, -100, 0.5, 35)
+teleportButton.Text = "Teleport"
+teleportButton.Parent = screenGui
+
+-- Function to teleport the player to the target
+local function teleportTo(targetPlayer)
+    if targetPlayer then
+        local targetCharacter = targetPlayer.Character
+        if targetCharacter and targetCharacter:FindFirstChild("HumanoidRootPart") then
+            local playerCharacter = localPlayer.Character
+            if playerCharacter and playerCharacter:FindFirstChild("HumanoidRootPart") then
+                -- Teleport the player to the target's position
+                playerCharacter.HumanoidRootPart.CFrame = targetCharacter.HumanoidRootPart.CFrame
+            else
+                warn("Local player character or HumanoidRootPart not found.")
+            end
+        else
+            warn("Target player character or HumanoidRootPart not found.")
+        end
+    else
+        warn("Target player not found.")
+    end
+end
+
+-- Event to check command and teleport
+teleportButton.MouseButton1Click:Connect(function()
+    local command = commandTextBox.Text:lower()
+    if command == "come" then
+        local targetPlayer = Players:FindFirstChild(teleportToPlayerName)
+        if targetPlayer then
+            teleportTo(targetPlayer)
+            print("Teleported to " .. teleportToPlayerName)
+        else
+            warn("Target player not found.")
+        end
+    else
+        warn("Invalid command.")
+    end
+end)
